@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/ananyapattnaik/Desktop/ml-course/mlops-test/mlruns/0/867e430803dd4df7a2fd5354c69b2fc5/artifacts
+end_time: 1715192951104
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 867e430803dd4df7a2fd5354c69b2fc5
+run_name: gifted-vole-719
+run_uuid: 867e430803dd4df7a2fd5354c69b2fc5
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1715192947325
+status: 3
+tags: []
+user_id: ananyapattnaik
