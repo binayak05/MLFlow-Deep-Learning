@@ -11,6 +11,7 @@ from sklearn.model_selection import train_test_split
 import mlflow
 import mlflow.sklearn
 from mlflow.models import infer_signature
+from mlflow import MlflowClient
 
 logging.basicConfig(level=logging.WARN)
 logger = logging.getLogger(__name__)
@@ -72,9 +73,13 @@ with mlflow.start_run():
     print("  MAE: %s" % mae)
     print("  R2: %s" % r2)
 
-    # Infer model signature
-    predictions = lr.predict(train_x)
-    signature = infer_signature(train_x, predictions)
+    # Infer model signature - This is for local server of MLFlow
+    # predictions = lr.predict(train_x)
+    # signature = infer_signature(train_x, predictions)
+
+    # For remote server only(DagsHub)
+    remote_server_uri = "https://dagshub.com/binayak.mahapatra05/MLFlow-Deep-Learning.mlflow"
+    mlflow.set_tracking_uri(remote_server_uri)
 
     # Log parameter, metrics, and model to MLflow
     mlflow.log_param("alpha", alpha)
@@ -83,4 +88,19 @@ with mlflow.start_run():
     mlflow.log_metric("r2", r2)
     mlflow.log_metric("mae", mae)
 
-    mlflow.sklearn.log_model(lr, "model", signature=signature)
+    tracking_url_type_store = ''
+    if tracking_url_type_store != 'file':
+        # Register the Model
+        # There are other ways to use Model Registry, which depends on use case
+        mlflow.sklearn.log_model(
+            lr, "model", registered_model_name="ElasticnetWineModel")
+
+    else:
+        mlflow.sklearn.log_model(lr, "model")
+        # Below code is for local server
+        # mlflow.sklearn.log_model(lr, "model", signature=signature)
+
+    client = MlflowClient()
+    client.transition_model_version_stage(
+        name="ElasticnetWineModel", version=5, stage="Staging"
+    )
